@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: restaurantes
+// Document ID: the numeric catalog id as a string ("0", "1", ...)
+//
+// Fields:
+//   id            int       required, matches the document id
+//   restaurante   string    required, place name
+//   zona          string    required, area in Monterrey
+//   tipo_comida   string    required, one of Carne, Tacos,
+//                           Pizza / Italiana, Asiatica, Mariscos
+//   ambiente      int       required, 1 to 4
+//   presupuesto   int       required, 1 to 4
+//   vegetariano   int       required, 0 or 1
+//   latitud       float     required
+//   longitud      float     required
+//
+// The catalog is public menu data. The app has no user accounts.
+// Clients may read it. They may not create, edit, or delete places.
+// Writes happen from the Firebase console or an admin script.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /restaurantes/{id} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+  }
+}

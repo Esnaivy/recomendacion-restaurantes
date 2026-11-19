@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#efe6d6">
+  <title>¿Qué se te antoja?</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23221e19'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,560;1,9..144,560&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #efe6d6;
+      --card: #f7f1e6;
+      --ink: #221e19;
+      --muted: #746b61;
+      --line: #e0d5c4;
+      --chile: #b8432f;
+      --moss: #24352c;
+      --cream: #f4eee4;
+      --sans: "Schibsted Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+      --serif: "Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, #f6f0e4 0%, var(--paper) 28%, #e7dccb 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+    }
+
+    .bar {
+      height: 6px;
+      background: var(--chile);
+    }
+
+    main {
+      width: min(440px, 100%);
+      margin: 0 auto;
+      padding: max(22px, env(safe-area-inset-top)) 18px max(28px, env(safe-area-inset-bottom));
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--chile);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 560;
+      font-size: clamp(40px, 11vw, 52px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 560;
+      color: var(--chile);
+    }
+
+    .lede {
+      margin: 14px 0 0;
+      max-width: 28ch;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .sheet {
+      margin-top: 26px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .row {
+      position: relative;
+      padding: 12px 16px 11px;
+    }
+
+    .row + .row { border-top: 1px solid var(--line); }
+
+    label {
+      display: block;
+      margin: 0 0 2px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    select {
+      appearance: none;
+      width: 100%;
+      margin: 0;
+      padding: 2px 28px 2px 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font: 500 17px/1.35 var(--sans);
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+    }
+
+    .row:focus-within {
+      background: #fffaf3;
+      box-shadow: inset 3px 0 0 var(--chile);
+    }
+
+    .chevron {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: 10px;
+      height: 10px;
+      border-right: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px 18px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--ink);
+      color: var(--cream);
+      font: 600 16px/1 var(--sans);
+      letter-spacing: 0.01em;
+      cursor: pointer;
+    }
+
+    button:hover { background: #342c25; }
+
+    button:active { transform: translateY(1px); }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.72;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--chile);
+      outline-offset: 3px;
+    }
+
+    .note {
+      margin: 10px 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .error {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8e8e2;
+      color: #7a2b1c;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .error[hidden], .slip[hidden] { display: none; }
+
+    .slip {
+      margin-top: 22px;
+      padding: 18px 16px 14px;
+      border-radius: 20px;
+      background: var(--moss);
+      color: var(--cream);
+    }
+
+    .slip .kicker { color: #e7b2a4; }
+
+    .slip h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 560;
+      font-size: clamp(30px, 8vw, 38px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .where {
+      margin: 8px 0 0;
+      color: #d9d0c3;
+      font-size: 15px;
+    }
+
+    .score {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 16px 0 0;
+    }
+
+    .score strong {
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 560;
+      letter-spacing: -0.03em;
+    }
+
+    .score span {
+      color: #c9c0b4;
+      font-size: 13px;
+    }
+
+    .map {
+      margin-top: 14px;
+      overflow: hidden;
+      height: 230px;
+      border-radius: 14px;
+      background: #1b2821;
+    }
+
+    .map iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .slip a { color: #f4eee4; }
+
+
+    @media (prefers-reduced-motion: no-preference) {
+      .slip.enter { animation: rise 0.35s ease; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (min-width: 720px) {
+      main { padding-top: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar" aria-hidden="true"></div>
+  <main>
+    <header>
+      <p class="kicker">Monterrey</p>
+      <h1>¿Qué se te <em>antoja</em>?</h1>
+      <p class="lede">Comida, presupuesto y ambiente. Te proponemos un lugar cerca.</p>
+    </header>
+
+    <form id="carta" class="sheet">
+      <div class="row">
+        <label for="tipo_comida">Comida</label>
+        <select id="tipo_comida" name="tipo_comida">
+          <option value="Carne">Carne y cortes</option>
+          <option value="Tacos">Tacos</option>
+          <option value="Pizza / Italiana">Pizza e italiana</option>
+          <option value="Asiatica">Asiática</option>
+          <option value="Mariscos">Mariscos</option>
+        </select>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
+
+      <div class="row">
+        <label for="vegetariano">Vegetariano</label>
+        <select id="vegetariano" name="vegetariano">
+          <option value="0">No hace falta</option>
+          <option value="1">Sí, con opciones</option>
+        </select>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
+
+      <div class="row">
+        <label for="presupuesto">Presupuesto</label>
+        <select id="presupuesto" name="presupuesto">
+          <option value="1">Económico · menos de $150</option>
+          <option value="2">Medio · $150 a $350</option>
+          <option value="3">Medio-alto · $350 a $700</option>
+          <option value="4">Alto · más de $700</option>
+        </select>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
+
+      <div class="row">
+        <label for="ambiente">Ambiente</label>
+        <select id="ambiente" name="ambiente">
+          <option value="1">Familiar, tranquilo</option>
+          <option value="2">Casual, con amigos</option>
+          <option value="3">Cita o formal</option>
+          <option value="4">Noche, bar</option>
+        </select>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
+    </form>
+
+    <button id="btn-consultar" type="button">Buscar lugar</button>
+    <p class="note">La ubicación solo sirve para medir la distancia. Si la bloqueas, partimos del centro.</p>
+    <p id="error" class="error" hidden></p>
+
+    <section id="resultado" class="slip" hidden>
+      <p class="kicker">Sugerencia</p>
+      <h2 id="res_nombre"></h2>
+      <p class="where"><span id="res_zona"></span> · <span id="res_tipo"></span> · <span id="res_distancia"></span></p>
+      <p class="score"><strong id="res_afinidad"></strong><span>de afinidad</span></p>
+      <div class="map">
+        <iframe id="iframe-mapa" title="Mapa del restaurante" src=""></iframe>
+      </div>
+      <p class="where"><a id="mapa-link" href="#">Abrir en la app de mapas</a></p>
+    </section>
+  </main>
+
+  <script src="datos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

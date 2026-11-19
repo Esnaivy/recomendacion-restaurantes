@@ -1,0 +1,11 @@
+{
+  "firestore": [
+    {
+      "database": "antojo",
+      "location": "us-central1",
+      "edition": "enterprise",
+      "rules": "firestore.rules",
+      "indexes": "firestore.indexes.json"
+    }
+  ]
+}
